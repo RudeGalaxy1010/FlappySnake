@@ -8,7 +8,7 @@ public class PCInput : MonoBehaviour, IInput
 
     public bool IsMainButtonPressed => _isMainButtonPressed;
 
-    void IUpdateable.Update()
+    private void Update()
     {
         _isMainButtonPressed = Input.GetKey(_mainButtonKey);
     }

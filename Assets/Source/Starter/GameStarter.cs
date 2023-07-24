@@ -1,30 +1,22 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameStarter : MonoBehaviour
 {
+    [Header("Player")]
     [SerializeField] private Player _playerPrefab;
     [SerializeField] private Transform _playerSpawnPoint;
 
-    private List<IUpdateable> _updateables;
-
-    private void Awake()
-    {
-        _updateables = new List<IUpdateable>();
-    }
+    [Header("Obstacles")]
+    [SerializeField] private Obstacle[] _obstaclePrefabs;
+    [SerializeField] private Transform _spawnPoint;
+    [SerializeField] private float _minSpawnTime;
+    [SerializeField] private float _maxSpawnTime;
 
     private void Start()
     {
-        IInput input = RegisterUpdateable(CreateInput());
-        Player player = RegisterUpdateable(CreatePlayer(input));
-    }
-
-    private void Update()
-    {
-        for (int i = 0; i < _updateables.Count; i++)
-        {
-            _updateables[i].Update();
-        }
+        IInput input = CreateInput();
+        CreatePlayer(input);
+        CreateObstacleSpawner(_minSpawnTime, _maxSpawnTime, _spawnPoint, _obstaclePrefabs);
     }
 
     private IInput CreateInput()
@@ -44,24 +36,17 @@ public class GameStarter : MonoBehaviour
         PlayerSpawner playerSpawner = gameObject.AddComponent<PlayerSpawner>();
         playerSpawner.Construct(_playerPrefab, _playerSpawnPoint);
         Player player = playerSpawner.CreatePlayer();
-        player.Construct(input);
+        PlayerMove playerMove = player.gameObject.AddComponent<PlayerMove>();
+        Health playerHealth = player.gameObject.AddComponent<Health>();
+        playerMove.Construct(input);
         return player;
     }
 
-    private T RegisterUpdateable<T>(T obj)
+    private ObstacleSpawner CreateObstacleSpawner(float minSpawnTime, float maxSpawnTime, 
+        Transform spawnPoint, Obstacle[] obstaclePrefabs)
     {
-        if (obj is IUpdateable == false)
-        {
-            return obj;
-        }
-
-        IUpdateable updateable = obj as IUpdateable;
-
-        if (_updateables.Contains(updateable) == false)
-        {
-            _updateables.Add(updateable);
-        }
-
-        return obj;
+        ObstacleSpawner obstacleSpawner = gameObject.AddComponent<ObstacleSpawner>();
+        obstacleSpawner.Construct(minSpawnTime, maxSpawnTime, spawnPoint, obstaclePrefabs);
+        return obstacleSpawner;
     }
 }

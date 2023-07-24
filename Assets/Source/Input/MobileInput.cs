@@ -6,7 +6,7 @@ public class MobileInput : MonoBehaviour, IInput
 
     public bool IsMainButtonPressed => _isMainButtonPressed;
 
-    void IUpdateable.Update()
+    private void Update()
     {
         for (int i = 0; i < Input.touchCount; i++)
         {

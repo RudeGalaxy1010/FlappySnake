@@ -1,4 +1,4 @@
-public interface IInput : IUpdateable
+public interface IInput
 {
     public bool IsMainButtonPressed { get; }
 }
