@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class Player : MonoBehaviour, IUpdateable
 {
-    private const float UpVelocity = 10f;
+    private const float UpVelocity = 6f;
 
     [SerializeField] private Rigidbody2D _rigidbody2D;
+    [SerializeField] private float _transitionSpeed = 2f;
 
     private IInput _input;
 
@@ -17,7 +18,13 @@ public class Player : MonoBehaviour, IUpdateable
     {
         if (_input.IsMainButtonPressed == true)
         {
-            _rigidbody2D.velocity = Vector2.up * UpVelocity;
+            ChangeVelocity();
         }
+    }
+
+    private void ChangeVelocity()
+    {
+        _rigidbody2D.velocity = Vector2.MoveTowards(
+            _rigidbody2D.velocity, Vector2.up * UpVelocity, _transitionSpeed * Time.deltaTime);
     }
 }
