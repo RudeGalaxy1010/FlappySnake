@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class GameStarter : MonoBehaviour
 {
+    [SerializeField] private GameObject _startText;
+
     [Header("Player")]
     [SerializeField] private Player _playerPrefab;
     [SerializeField] private Transform _playerSpawnPoint;
@@ -19,14 +21,57 @@ public class GameStarter : MonoBehaviour
     [SerializeField] [Range(0, 1)] private float _coinSpawnChance;
     [SerializeField] private TMP_Text _coinsValueText;
 
+    private IInput _input;
+    private bool _isPause;
+    private PlayerMove _playerMove;
+    private ObstacleSpawner _obstacleSpawner;
+
     private void Start()
     {
-        IInput input = CreateInput();
-        Player player = CreatePlayer(input);
-        ObstacleSpawner obstacleSpawner = CreateObstacleSpawner(_obstacleSpawnChance, _spawnPoint, _obstaclePrefabs);
+        _input = CreateInput();
+        Player player = CreatePlayer(_input);
+        _playerMove = player.GetComponent<PlayerMove>();
+        _obstacleSpawner = CreateObstacleSpawner(_obstacleSpawnChance, _spawnPoint, _obstaclePrefabs);
         CoinsCollector coinsCollector = player.GetComponent<CoinsCollector>();
-        CreateCoinsSpawner(obstacleSpawner, _coinPrefab, coinsCollector, _coinSpawnChance, _attractTime);
+        CreateCoinsSpawner(_obstacleSpawner, _coinPrefab, coinsCollector, _coinSpawnChance, _attractTime);
         CreateCoinsDisplayer(coinsCollector, _coinsValueText);
+        Pause(_playerMove, _obstacleSpawner);
+    }
+
+    private void Pause(params IPauseable[] pauseables)
+    {
+        for (int i = 0; i < pauseables.Length; i++)
+        {
+            pauseables[i].Pause();
+        }
+
+        _isPause = true;
+        _startText.SetActive(true);
+    }
+
+    private void Resume(params IPauseable[] pauseables)
+    {
+        for (int i = 0; i < pauseables.Length; i++)
+        {
+            pauseables[i].Resume();
+        }
+
+        _isPause = false;
+        _startText.SetActive(false);
+    }
+
+    private void Update()
+    {
+        if (_isPause == false)
+        {
+            return;
+        }
+
+        if (_input.IsMainButtonPressed == true)
+        {
+            Resume(_playerMove, _obstacleSpawner);
+            _isPause = false;
+        }
     }
 
     private IInput CreateInput()
@@ -47,8 +92,9 @@ public class GameStarter : MonoBehaviour
         playerSpawner.Construct(_playerPrefab, _playerSpawnPoint);
         Player player = playerSpawner.CreatePlayer();
         PlayerMove playerMove = player.gameObject.AddComponent<PlayerMove>();
+        ParticleSystem trail = player.GetComponentInChildren<ParticleSystem>();
+        playerMove.Construct(input, trail);
         Health playerHealth = player.gameObject.AddComponent<Health>();
-        playerMove.Construct(input);
         return player;
     }
 
