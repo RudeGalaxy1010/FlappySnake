@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ObstacleHorizontalMove : MonoBehaviour
+public class HorizontalMove : MonoBehaviour
 {
     private const float DestroyLimitX = -15f;
 

@@ -9,14 +9,20 @@ public class GameStarter : MonoBehaviour
     [Header("Obstacles")]
     [SerializeField] private Obstacle[] _obstaclePrefabs;
     [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private float _minSpawnTime;
-    [SerializeField] private float _maxSpawnTime;
+    [SerializeField] [Range(0, 1)] private float _obstacleSpawnChance;
+
+    [Header("Coins")]
+    [SerializeField] private Coin _coinPrefab;
+    [SerializeField] private float _attractTime;
+    [SerializeField] [Range(0, 1)] private float _coinSpawnChance;
 
     private void Start()
     {
         IInput input = CreateInput();
-        CreatePlayer(input);
-        CreateObstacleSpawner(_minSpawnTime, _maxSpawnTime, _spawnPoint, _obstaclePrefabs);
+        Player player = CreatePlayer(input);
+        ObstacleSpawner obstacleSpawner = CreateObstacleSpawner(_obstacleSpawnChance, _spawnPoint, _obstaclePrefabs);
+        CoinsCollector coinsCollector = player.GetComponent<CoinsCollector>();
+        CreateCoinsSpawner(obstacleSpawner, _coinPrefab, coinsCollector, _coinSpawnChance, _attractTime);
     }
 
     private IInput CreateInput()
@@ -42,11 +48,19 @@ public class GameStarter : MonoBehaviour
         return player;
     }
 
-    private ObstacleSpawner CreateObstacleSpawner(float minSpawnTime, float maxSpawnTime, 
-        Transform spawnPoint, Obstacle[] obstaclePrefabs)
+    private ObstacleSpawner CreateObstacleSpawner(float obstacleSpawnChance, Transform spawnPoint, 
+        Obstacle[] obstaclePrefabs)
     {
         ObstacleSpawner obstacleSpawner = gameObject.AddComponent<ObstacleSpawner>();
-        obstacleSpawner.Construct(minSpawnTime, maxSpawnTime, spawnPoint, obstaclePrefabs);
+        obstacleSpawner.Construct(obstacleSpawnChance, spawnPoint, obstaclePrefabs);
         return obstacleSpawner;
+    }
+
+    private CoinSpawner CreateCoinsSpawner(ObstacleSpawner obstacleSpawner, Coin coinPrefab,
+        CoinsCollector coinsCollector, float spawnChance, float attractTime)
+    {
+        CoinSpawner coinSpawner = gameObject.AddComponent<CoinSpawner>();
+        coinSpawner.Construct(obstacleSpawner, coinPrefab, coinsCollector, spawnChance, attractTime);
+        return coinSpawner;
     }
 }
