@@ -47,6 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 417b7c74076bf4047a932215f5b8f4ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _value: 1
   _attractRadius: 1.5
   _collectRadius: 0.3
 --- !u!114 &-4160112661600509812

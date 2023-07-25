@@ -1,3 +1,5 @@
+using System;
+using TMPro;
 using UnityEngine;
 
 public class GameStarter : MonoBehaviour
@@ -15,6 +17,7 @@ public class GameStarter : MonoBehaviour
     [SerializeField] private Coin _coinPrefab;
     [SerializeField] private float _attractTime;
     [SerializeField] [Range(0, 1)] private float _coinSpawnChance;
+    [SerializeField] private TMP_Text _coinsValueText;
 
     private void Start()
     {
@@ -23,6 +26,7 @@ public class GameStarter : MonoBehaviour
         ObstacleSpawner obstacleSpawner = CreateObstacleSpawner(_obstacleSpawnChance, _spawnPoint, _obstaclePrefabs);
         CoinsCollector coinsCollector = player.GetComponent<CoinsCollector>();
         CreateCoinsSpawner(obstacleSpawner, _coinPrefab, coinsCollector, _coinSpawnChance, _attractTime);
+        CreateCoinsDisplayer(coinsCollector, _coinsValueText);
     }
 
     private IInput CreateInput()
@@ -62,5 +66,12 @@ public class GameStarter : MonoBehaviour
         CoinSpawner coinSpawner = gameObject.AddComponent<CoinSpawner>();
         coinSpawner.Construct(obstacleSpawner, coinPrefab, coinsCollector, spawnChance, attractTime);
         return coinSpawner;
+    }
+
+    private CoinsValueDisplayer CreateCoinsDisplayer(CoinsCollector coinsCollector, TMP_Text coinsValueText)
+    {
+        CoinsValueDisplayer coinsValueDisplayer = gameObject.AddComponent<CoinsValueDisplayer>();
+        coinsValueDisplayer.Construct(coinsCollector, coinsValueText);
+        return coinsValueDisplayer;
     }
 }

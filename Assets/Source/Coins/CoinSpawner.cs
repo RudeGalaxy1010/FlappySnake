@@ -4,8 +4,8 @@ using Random = UnityEngine.Random;
 public class CoinSpawner : MonoBehaviour
 {
     private const float OffsetX = 2f;
-    private const float MinOffsetY = -5f;
-    private const float MaxOffsetY = 5f;
+    private const float MinOffsetY = -4.5f;
+    private const float MaxOffsetY = 4.5f;
 
     private ObstacleSpawner _obstacleSpawner;
     private Coin _coinPrefab;

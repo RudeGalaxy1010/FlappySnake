@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
+    [SerializeField] private int _value;
     [SerializeField] private float _attractRadius;
     [SerializeField] private float _collectRadius;
 
@@ -13,6 +14,8 @@ public class Coin : MonoBehaviour
         _coinsCollector = coinsCollector;
         _attractTime = attractTime;
     }
+
+    public int Value => _value;
 
     private void Update()
     {
