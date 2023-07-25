@@ -31,11 +31,20 @@ public class GameStarter : MonoBehaviour
         _input = CreateInput();
         Player player = CreatePlayer(_input);
         _playerMove = player.GetComponent<PlayerMove>();
+        Health playerHealth = player.GetComponent<Health>();
         _obstacleSpawner = CreateObstacleSpawner(_obstacleSpawnChance, _spawnPoint, _obstaclePrefabs);
         CoinsCollector coinsCollector = player.GetComponent<CoinsCollector>();
         CreateCoinsSpawner(_obstacleSpawner, _coinPrefab, coinsCollector, _coinSpawnChance, _attractTime);
         CreateCoinsDisplayer(coinsCollector, _coinsValueText);
+        CreateSceneReload(playerHealth);
         Pause(_playerMove, _obstacleSpawner);
+    }
+
+    private SceneReload CreateSceneReload(Health playerHealth)
+    {
+        SceneReload sceneReload = gameObject.AddComponent<SceneReload>();
+        sceneReload.Construct(playerHealth);
+        return sceneReload;
     }
 
     private void Pause(params IPauseable[] pauseables)

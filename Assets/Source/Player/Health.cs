@@ -7,7 +7,6 @@ public class Health : MonoBehaviour
 
     public void Die()
     {
-        Debug.Log("Die");
         Died?.Invoke();
     }
 }

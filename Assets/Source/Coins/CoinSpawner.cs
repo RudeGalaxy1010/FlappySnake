@@ -24,6 +24,14 @@ public class CoinSpawner : MonoBehaviour
         _coinAttractTime = coinAttractTime;
     }
 
+    private void OnDestroy()
+    {
+        if (_obstacleSpawner != null)
+        {
+            _obstacleSpawner.ObstacleCreated -= OnObstacleCreated;
+        }
+    }
+
     private void OnObstacleCreated(Obstacle obstacle)
     {
         if (Random.value <= _spawnChance)
