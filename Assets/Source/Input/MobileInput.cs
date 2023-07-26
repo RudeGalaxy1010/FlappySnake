@@ -8,15 +8,6 @@ public class MobileInput : MonoBehaviour, IInput
 
     private void Update()
     {
-        for (int i = 0; i < Input.touchCount; i++)
-        {
-            if (Input.touches[i].phase == TouchPhase.Began)
-            {
-                _isMainButtonPressed = true;
-                return;
-            }
-        }
-
-        _isMainButtonPressed = false;
+        _isMainButtonPressed = Input.touchCount > 0;
     }
 }
